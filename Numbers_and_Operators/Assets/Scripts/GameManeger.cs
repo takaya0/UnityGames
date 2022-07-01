@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -24,9 +25,15 @@ public class GameManeger : MonoBehaviour{
     [SerializeField] TextMeshProUGUI TargetValueText;
     // 目標の数字
 
+    [SerializeField] GameObject ExchangeButton;
+
 
     private List<string> allNumbersCardList = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8" };
     private List<string> allOperatorsCardList = new List<string> { "Plus", "Minus", "Product" , "Quotient"};
+
+
+    // カードの重み
+    private List<float> OperatorCardWeight = new List<float> { 0.25f, 0.25f, 0.25f, 0.25f };
 
 
 
@@ -35,20 +42,18 @@ public class GameManeger : MonoBehaviour{
 
     void Start(){
         ResultPanel.SetActive(false);
-        AddinitialCards(3, 4);
+        AddinitialCards(4, 4);
         TargetValueText.text = GetTargetValue(10, 50).ToString();
       
     }
 
-    void EnemyTurn() {
-        
-
+    private void EnemyTurn() {
         CardController [] operatorsCardList = EnemyOperatorsHandTransform.GetComponentsInChildren<CardController>();
         CardController [] numbersCardList = EnemyNumbersHandTransform.GetComponentsInChildren<CardController>();
 
         // カードを選ぶ
-        CardController operatorCard = operatorsCardList[0];
-        CardController numberCard = numbersCardList[0];
+        CardController operatorCard = operatorsCardList[Random.Range(0, operatorsCardList.Length)];
+        CardController numberCard = numbersCardList[Random.Range(0, numbersCardList.Length)];
        
 
         // カードを配置する
@@ -59,23 +64,21 @@ public class GameManeger : MonoBehaviour{
         CaluculateScore(selectedCards);
     }
 
-
-    void GameTurnFlow() {
+    private void GameTurnFlow() {
         if (IsPlayerTurn) {
             // プレイヤーの行動処理
-           
-           
-        }
-        else {
+
+
+        } else {
             
             EnemyTurn();
-            if (IsGameFinished()) ShowResulttPanel();
+            if (IsGameFinished()) ShowResultPanel();
             else {
                 // カードを引く
-                string OpetatorCardName = DrawCard(allOperatorsCardList);
-                string NumberCardName = DrawCard(allNumbersCardList);
-                AddCardToHand(EnemyOperatorsHandTransform, OpetatorCardName);
-                AddCardToHand(EnemyNumbersHandTransform, NumberCardName);
+                string opetatorCardName = DrawCard(allOperatorsCardList);
+                string numberCardName = DrawCard(allNumbersCardList);
+                AddCardToHand(EnemyOperatorsHandTransform, opetatorCardName);
+                AddCardToHand(EnemyNumbersHandTransform, numberCardName);
                 IsPlayerTurn = !IsPlayerTurn;
                 GameTurnFlow();
 
@@ -95,27 +98,25 @@ public class GameManeger : MonoBehaviour{
                 CaluculateScore(selectedCards);
 
                 // ゲームが終了したら、結果パネルを出す
-                if (IsGameFinished()) ShowResulttPanel();
+                if (IsGameFinished()) ShowResultPanel();
                 else {
                     // カードを引く
-                    string OpetatorCardName = DrawCard(allOperatorsCardList);
-                    string NumberCardName = DrawCard(allNumbersCardList);
-                    AddCardToHand(PlayerOperatorsHandTransform, OpetatorCardName);
-                    AddCardToHand(PlayerNumbersHandTransform, NumberCardName);
+                    string opetatorCardName = DrawCard(allOperatorsCardList);
+                    string numberCardName = DrawCard(allNumbersCardList);
+                    AddCardToHand(PlayerOperatorsHandTransform, opetatorCardName);
+                    AddCardToHand(PlayerNumbersHandTransform, numberCardName);
 
                     IsPlayerTurn = !IsPlayerTurn;
                     GameTurnFlow();
 
                 }
-            }
-            else {
+            } else {
                 for (int i = 0; i < selectedCards.Count; i++) {
                     string kind = selectedCards[i].card.kind;
                     if (kind == "number") {
                         if (IsPlayerTurn) selectedCards[i].movement.SetCardTransform(PlayerNumbersHandTransform);
                         else selectedCards[i].movement.SetCardTransform(EnemyNumbersHandTransform);
-                    }
-                    else {
+                    } else {
                         if (IsPlayerTurn) selectedCards[i].movement.SetCardTransform(PlayerOperatorsHandTransform);
                         else selectedCards[i].movement.SetCardTransform(EnemyOperatorsHandTransform);
                     }
@@ -133,15 +134,11 @@ public class GameManeger : MonoBehaviour{
             string kind = selectedCards[i].card.kind;
             if (kind == "number") {
                 numberCard = selectedCards[i];
-            }
-            else if(kind == "operator"){
+            } else if (kind == "operator") {
                operatorCard = selectedCards[i];
-            }
-            else {
+            } else {
                 Debug.LogWarning("Invalid card kind");
             }
-           
-
         }
            
         if (IsPlayerTurn) PlayerNumber.text = EvaluateFormula(PlayerNumber.text, operatorCard.card.value, numberCard.card.value).ToString();
@@ -173,7 +170,7 @@ public class GameManeger : MonoBehaviour{
 
     }
 
-    private void ShowResulttPanel() {
+    private void ShowResultPanel() {
         ResultPanel.SetActive(true);
         if (IsPlayerTurn) ResultText.text = "Player WIN";
         else ResultText.text = "Player LOSE";
@@ -184,13 +181,7 @@ public class GameManeger : MonoBehaviour{
         return selectedCards;
     }
 
-    // Update is called once per frame
-    void Update(){
-
-
-       
-    }
-
+  
 
     private void AddinitialCards(int NumbersCardNum, int OperatorsCardNum) {
         for(int i = 0; i < NumbersCardNum; i++) {
@@ -211,6 +202,24 @@ public class GameManeger : MonoBehaviour{
     private void AddCardToHand(Transform Hand, string cardName) {
         CardController card = Instantiate(CardPrefab, Hand, false);
         card.Init(cardName);
+    }
+
+
+    private string DrawCardWithWeights(List<string> CardList, List<float> weights) {
+
+        if(CardList.Count != weights.Count) {
+            Debug.LogWarning("CardList.Count " + CardList.Count.ToString() + " do not equal to weights.Count " + weights.Count.ToString());
+        }
+        int _windex = CardList.Count - 1;
+        float rnd = Random.Range(0.0f, 1.0f);
+        float weightSum = 0.0f;
+
+        for (int i = 0; i < weights.Count; i++) {
+            if (weightSum <= rnd && rnd < weightSum + OperatorCardWeight[i]) _windex = i;
+            weightSum += OperatorCardWeight[i];
+        }
+
+        return CardList[_windex];
     }
     private string DrawCard(List<string> CardList) {
         int _index = Random.Range(0, CardList.Count);
@@ -269,4 +278,12 @@ public class GameManeger : MonoBehaviour{
     public void OnBackToTitleButton() {
         SceneManager.LoadScene("TitleScene");
     }
+
+    public void OnExchangeButton() {
+        if (IsPlayerTurn) {
+            (EnemyNumber.text, PlayerNumber.text) = (PlayerNumber.text, EnemyNumber.text);
+            ExchangeButton.SetActive(false);
+        }
+    }
+        
 }
