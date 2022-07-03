@@ -9,12 +9,17 @@ public class GameManeger : MonoBehaviour{
 
 
     // コストポイントの最大値
-    const int MAX_COST_POINT = 8;
+    const int MAX_COST_POINT = 12;
+
+    // 手札の最大枚数(演算・数字共通)
+    const int MAX_HAND_NUM = 5;
    
 
     [SerializeField] CardController CardPrefab;
     [SerializeField] GameObject ResultPanel;
     [SerializeField] TextMeshProUGUI ResultText;
+
+    [SerializeField] GameObject SkillPanel;
 
     // 敵側の手札
     [SerializeField] Transform EnemyNumbersHandTransform, EnemyOperatorsHandTransform;
@@ -41,6 +46,7 @@ public class GameManeger : MonoBehaviour{
     [SerializeField] GameObject ExchangeButton;
 
 
+
     private List<string> allNumbersCardList = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8" };
     private List<string> allOperatorsCardList = new List<string> { "Plus", "Minus", "Product" , "Quotient"};
 
@@ -58,7 +64,7 @@ public class GameManeger : MonoBehaviour{
 
     void Start(){
         ResultPanel.SetActive(false);
-        AddinitialCards(4, 4);
+        AddinitialCards(3, 3);
         TargetValueText.text = GetTargetValue(10, 50).ToString();
 
         // 初期コストポイントの設定 & UIへの反映
@@ -115,6 +121,8 @@ public class GameManeger : MonoBehaviour{
             // 選ばれたカードを取得
             List<CardController> selectedCards = GetSelectedCards(PlayerSelectedCardsTransform);
 
+        
+
 
             if (CheckSelectedCards(selectedCards)) {
                 CaluculateScore(selectedCards);
@@ -150,24 +158,13 @@ public class GameManeger : MonoBehaviour{
 
     private void CaluculateScore(List<CardController> selectedCards) {
 
-        CardController operatorCard = default;
-        CardController numberCard = default;
-        for (int i = 0; i < selectedCards.Count; i++) {
-            string kind = selectedCards[i].card.kind;
-            if (kind == "number") {
-                numberCard = selectedCards[i];
-            } else if (kind == "operator") {
-               operatorCard = selectedCards[i];
-            } else {
-                Debug.LogWarning("Invalid card kind");
-            }
-        }
-           
-        if (IsPlayerTurn) PlayerNumber.text = EvaluateFormula(PlayerNumber.text, operatorCard.card.value, numberCard.card.value).ToString();
-        else EnemyNumber.text = EvaluateFormula(EnemyNumber.text, operatorCard.card.value, numberCard.card.value).ToString();
+     
+         // 選んだカードで演算して、UIに反映  
+        if (IsPlayerTurn) PlayerNumber.text = EvaluateFormula(PlayerNumber.text, selectedCards).ToString();
+        else EnemyNumber.text = EvaluateFormula(EnemyNumber.text, selectedCards).ToString();
 
-        operatorCard.Vanish();
-        numberCard.Vanish();
+        // カードを消去
+        foreach (CardController card in selectedCards) card.Vanish();
         
     }
 
@@ -191,19 +188,18 @@ public class GameManeger : MonoBehaviour{
 
     private bool CheckSelectedCards(List<CardController> selectedCards) {
 
-        //　2枚のみ選ばれているか確認
-        if(selectedCards.Count != 2) return false;
+        //　2枚 or 4枚選ばれているか確認
+        if(selectedCards.Count != 2 && selectedCards.Count != 4) return false;
 
 
-        // 演算カード、数字のカードがそれぞれ1枚づつ選ばれたか確認
-        HashSet<string> kinds = new HashSet<string>();
-        for (int i = 0; i < selectedCards.Count; i++) {
+        // 正しい順番で配置されているかどうか確認
+
+   
+        string[] rightCardOrder = { "operator", "number" };
+        for(int i = 0; i < selectedCards.Count; i++) {
             string kind = selectedCards[i].card.kind;
-            kinds.Add(kind);
-            if(kind != "number" && kind != "operator") return false;
+            if(kind != rightCardOrder[i % 2]) return false;
         }
-
-        if(kinds.Count != 2) return false;
 
         return true;
 
@@ -243,7 +239,7 @@ public class GameManeger : MonoBehaviour{
         card.Init(cardName);
     }
 
-
+    /*
     private string DrawCardWithWeights(List<string> CardList, List<float> weights) {
 
         if(CardList.Count != weights.Count) {
@@ -260,6 +256,7 @@ public class GameManeger : MonoBehaviour{
 
         return CardList[_windex];
     }
+    */
     private string DrawCard(List<string> CardList) {
         int _index = Random.Range(0, CardList.Count);
         return CardList[_index];
@@ -289,22 +286,40 @@ public class GameManeger : MonoBehaviour{
     }
 
 
-    private int EvaluateFormula(string correntScore, string selectedOperator, string selectedNumber) {
+    private int EvaluateFormula(string currentScore, List<CardController> selectedCards) {
         int result = 0;
-        int selectedNum = 0;
+       
         try {
-            result = int.Parse(correntScore);
-            selectedNum = int.Parse(selectedNumber);
+            result = int.Parse(currentScore);
         }
         catch (System.FormatException) {
             Debug.Log("Invalid Value");
         }
 
-        if (selectedOperator == "+") result = result + selectedNum;
-        else if (selectedOperator == "-") result = Mathf.Max(result - selectedNum, 1);
-        else if (selectedOperator == "*") result = result * selectedNum;
-        else if (selectedOperator == "//") result = Mathf.Max(result/selectedNum, 1);
-        else Debug.LogWarning("Unsupported Operator");
+        int operatorCardIndex = 0;
+        int numberCardIndex = 1;
+
+        for(int i = 0; i < selectedCards.Count/2; i++) {
+            int numberCardValue = 0;
+            string operatorCardValue = selectedCards[operatorCardIndex].card.value;
+            try {
+                numberCardValue = int.Parse(selectedCards[numberCardIndex].card.value);
+            }
+            catch (System.FormatException) {
+                Debug.Log("Invalid Value");
+            }
+            if (operatorCardValue == "+") result = result + numberCardValue;
+            else if (operatorCardValue == "-") result = Mathf.Max(result - numberCardValue, 1);
+            else if (operatorCardValue == "*") result = result * numberCardValue;
+            else if (operatorCardValue == "//") result = Mathf.Max(result / numberCardValue, 1);
+            else Debug.LogWarning("Unsupported Operator");
+
+            operatorCardIndex += 2;
+            numberCardIndex += 2;
+
+        }
+
+      
 
         return result;
     }
@@ -318,11 +333,115 @@ public class GameManeger : MonoBehaviour{
         SceneManager.LoadScene("TitleScene");
     }
 
-    public void OnExchangeButton() {
-        if (IsPlayerTurn) {
+    public void OnExchangeButtonInSkillPanel() {
+
+        const int exchangeSkillPoint = 8;
+
+        if (playerCostPoint >= exchangeSkillPoint) {
+            // コストポイントを消費する
+            playerCostPoint = DecreaseCostPoint(playerCostPoint, exchangeSkillPoint);
+            ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
+
+            // お互いの数字を入れ替える
             (EnemyNumber.text, PlayerNumber.text) = (PlayerNumber.text, EnemyNumber.text);
-            ExchangeButton.SetActive(false);
+
+
+            // スキルパネルを閉じる
+            SkillPanel.SetActive(false);
         }
+
+
+      
     }
-        
+
+
+    private int DecreaseCostPoint(int currentSkillPoint ,int skillCost) {
+        return currentSkillPoint - skillCost;
+    }
+
+    public void OnDrawButtonInSkillPanel() {
+
+        const int drawSkillPoint = 4;
+
+        int currentCardInHand = PlayerOperatorsHandTransform.GetComponentsInChildren<CardController>().Length;
+
+        if(playerCostPoint >= drawSkillPoint && currentCardInHand < MAX_HAND_NUM) {
+            // コストポイントを消費する
+            playerCostPoint = DecreaseCostPoint(playerCostPoint, drawSkillPoint);
+            ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
+
+            // カードを引く
+            string opetatorCardName = DrawCard(allOperatorsCardList);
+            string numberCardName = DrawCard(allNumbersCardList);
+            AddCardToHand(PlayerOperatorsHandTransform, opetatorCardName);
+            AddCardToHand(PlayerNumbersHandTransform, numberCardName);
+
+
+            // スキルパネルを閉じる
+            SkillPanel.SetActive(false);
+        }
+
+
+    }
+
+    public void OnDownButtonInSkillPanel() {
+
+        const int downSkillPoint = 6;
+
+        if (playerCostPoint >= downSkillPoint) {
+            // コストポイントを消費する
+            playerCostPoint = DecreaseCostPoint(playerCostPoint, downSkillPoint);
+            ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
+
+            // 敵の数字をランダムに減少させる(from 10 to 30)
+            EnemyNumber.text = (Mathf.Max(IntParser(EnemyNumber.text) - Random.Range(10, 31), 1)).ToString();
+
+
+            // スキルパネルを閉じる
+            SkillPanel.SetActive(false);
+        }
+
+
+    }
+
+    public void OnUpButtonInSkillPanel() {
+
+        const int upSkillPoint = 6;
+
+        if (playerCostPoint >= upSkillPoint) {
+            // コストポイントを消費する
+            playerCostPoint = DecreaseCostPoint(playerCostPoint, upSkillPoint);
+            ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
+
+            // 敵の数字をランダムに上昇させる(from 10 to 30)
+            EnemyNumber.text = (IntParser(EnemyNumber.text) + Random.Range(10, 31)).ToString();
+
+
+            // スキルパネルを閉じる
+            SkillPanel.SetActive(false);
+        }
+
+
+    }
+
+    public void OnSkillButton() {
+        if(IsPlayerTurn) SkillPanel.SetActive(true);
+    }
+
+    public void OnBackButtonInSkillPanel() {
+        SkillPanel.SetActive(false);
+    }
+
+    private int IntParser(string numStr) {
+        int numInt = 0;
+        try {
+            numInt = int.Parse(numStr);
+        }
+        catch (System.FormatException) {
+            Debug.Log("Invalid Value : " + numStr);
+        }
+
+        return numInt;
+    }
+
 }
