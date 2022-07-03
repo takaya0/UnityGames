@@ -6,24 +6,37 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManeger : MonoBehaviour{
+
+
+    // コストポイントの最大値
+    const int MAX_COST_POINT = 8;
    
 
     [SerializeField] CardController CardPrefab;
     [SerializeField] GameObject ResultPanel;
     [SerializeField] TextMeshProUGUI ResultText;
-    [SerializeField] Transform EnemyNumbersHandTransform, EnemyOperatorsHandTransform;
+
     // 敵側の手札
-    [SerializeField] Transform PlayerNumbersHandTransform, PlayerOperatorsHandTransform;
+    [SerializeField] Transform EnemyNumbersHandTransform, EnemyOperatorsHandTransform;
+
     // プレイヤーの手札
-    [SerializeField] Transform EnemySelectedCardsTransform, PlayerSelectedCardsTransform;
+    [SerializeField] Transform PlayerNumbersHandTransform, PlayerOperatorsHandTransform;
+
     // 敵の選んだカード
-    
+    [SerializeField] Transform EnemySelectedCardsTransform, PlayerSelectedCardsTransform;
 
-    [SerializeField] TextMeshProUGUI EnemyNumber, PlayerNumber;
+    // お互いのコストポイントテキスト
+    [SerializeField] TextMeshProUGUI EnemyCostPointText, PlayerCostPointText;
+
+
+
+
     // それぞれの数字
+    [SerializeField] TextMeshProUGUI EnemyNumber, PlayerNumber;
 
-    [SerializeField] TextMeshProUGUI TargetValueText;
     // 目標の数字
+    [SerializeField] TextMeshProUGUI TargetValueText;
+   
 
     [SerializeField] GameObject ExchangeButton;
 
@@ -35,6 +48,9 @@ public class GameManeger : MonoBehaviour{
     // カードの重み
     private List<float> OperatorCardWeight = new List<float> { 0.25f, 0.25f, 0.25f, 0.25f };
 
+    // コストポイント
+    public int enemyCostPoint, playerCostPoint;
+
 
 
 
@@ -44,7 +60,12 @@ public class GameManeger : MonoBehaviour{
         ResultPanel.SetActive(false);
         AddinitialCards(4, 4);
         TargetValueText.text = GetTargetValue(10, 50).ToString();
-      
+
+        // 初期コストポイントの設定 & UIへの反映
+        enemyCostPoint = 2;
+        ApplyCostPointToUI(EnemyCostPointText, enemyCostPoint);
+        playerCostPoint = 2;
+        ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
     }
 
     private void EnemyTurn() {
@@ -67,10 +88,11 @@ public class GameManeger : MonoBehaviour{
     private void GameTurnFlow() {
         if (IsPlayerTurn) {
             // プレイヤーの行動処理
+            CostPointTwoUp();
 
 
         } else {
-            
+            CostPointTwoUp();
             EnemyTurn();
             if (IsGameFinished()) ShowResultPanel();
             else {
@@ -147,6 +169,23 @@ public class GameManeger : MonoBehaviour{
         operatorCard.Vanish();
         numberCard.Vanish();
         
+    }
+
+
+    private void CostPointTwoUp() {
+        if (IsPlayerTurn) {
+            playerCostPoint = Mathf.Min(MAX_COST_POINT, playerCostPoint + 2);
+            ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
+        
+        }
+        else {
+            enemyCostPoint = Mathf.Min(MAX_COST_POINT, enemyCostPoint + 2);
+           ApplyCostPointToUI(EnemyCostPointText, enemyCostPoint);
+        }
+    }
+
+    private void ApplyCostPointToUI(TextMeshProUGUI costPointText, int costPoint) {
+        costPointText.text = "CP : " + costPoint.ToString();
     }
 
 
