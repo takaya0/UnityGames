@@ -6,8 +6,6 @@ using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameManeger : MonoBehaviour{
-
-
     // コストポイントの最大値
     const int MAX_COST_POINT = 12;
 
@@ -156,18 +154,46 @@ public class GameManeger : MonoBehaviour{
         }
     }
 
+
+    private string GetFormulaFromSelectedCards(string currentNumber,List<CardController> selectedCards) {
+        string formula = currentNumber;
+
+        foreach(CardController card in selectedCards) {
+            string value = card.card.value;
+            formula += value;
+        }
+
+        return formula;
+    }
+
     private void CaluculateScore(List<CardController> selectedCards) {
 
-     
-         // 選んだカードで演算して、UIに反映  
-        if (IsPlayerTurn) PlayerNumber.text = EvaluateFormula(PlayerNumber.text, selectedCards).ToString();
-        else EnemyNumber.text = EvaluateFormula(EnemyNumber.text, selectedCards).ToString();
+
+        // 選んだカードで演算して、UIに反映  
+        if (IsPlayerTurn) {
+            string formula = GetFormulaFromSelectedCards(PlayerNumber.text, selectedCards);
+
+            // 文字数式を評価してresultに格納
+            ExpressionEvaluator.Evaluate(formula, out int result);
+
+            // UIに反映
+            PlayerNumber.text = result.ToString();
+        } else {
+            string formula = GetFormulaFromSelectedCards(EnemyNumber.text, selectedCards);
+
+            // 文字数式を評価してresultに格納
+            ExpressionEvaluator.Evaluate(formula, out int result);
+
+            // UIに反映
+            EnemyNumber.text = result.ToString();
+        }
 
         // カードを消去
         foreach (CardController card in selectedCards) card.Vanish();
         
     }
 
+    
 
     private void CostPointTwoUp() {
         if (IsPlayerTurn) {
@@ -285,7 +311,7 @@ public class GameManeger : MonoBehaviour{
 
     }
 
-
+    /*
     private int EvaluateFormula(string currentScore, List<CardController> selectedCards) {
         int result = 0;
        
@@ -323,7 +349,7 @@ public class GameManeger : MonoBehaviour{
 
         return result;
     }
-
+    */
 
     public void OnRestartButton() {
         SceneManager.LoadScene("GameScene");
