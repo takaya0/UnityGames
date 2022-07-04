@@ -7,7 +7,7 @@ using TMPro;
 
 public class GameManeger : MonoBehaviour{
     // コストポイントの最大値
-    const int MAX_COST_POINT = 12;
+    const int MAX_COST_POINT = 16;
 
     // 手札の最大枚数(演算・数字共通)
     const int MAX_HAND_NUM = 5;
@@ -63,7 +63,7 @@ public class GameManeger : MonoBehaviour{
     void Start(){
         ResultPanel.SetActive(false);
         AddinitialCards(3, 3);
-        TargetValueText.text = GetTargetValue(10, 50).ToString();
+        TargetValueText.text = GetTargetValue(50, 100).ToString();
 
         // 初期コストポイントの設定 & UIへの反映
         enemyCostPoint = 2;
@@ -176,6 +176,8 @@ public class GameManeger : MonoBehaviour{
             // 文字数式を評価してresultに格納
             ExpressionEvaluator.Evaluate(formula, out int result);
 
+            // スコアが0以下なら1にする
+            result = Mathf.Max(1, result);
             // UIに反映
             PlayerNumber.text = result.ToString();
         } else {
@@ -183,6 +185,9 @@ public class GameManeger : MonoBehaviour{
 
             // 文字数式を評価してresultに格納
             ExpressionEvaluator.Evaluate(formula, out int result);
+
+            // スコアが0以下なら1にする
+            result = Mathf.Max(1, result);
 
             // UIに反映
             EnemyNumber.text = result.ToString();
@@ -208,7 +213,7 @@ public class GameManeger : MonoBehaviour{
     }
 
     private void ApplyCostPointToUI(TextMeshProUGUI costPointText, int costPoint) {
-        costPointText.text = "CP : " + costPoint.ToString();
+        costPointText.text = "CP : " + costPoint.ToString() + "/" + MAX_COST_POINT.ToString();
     }
 
 
