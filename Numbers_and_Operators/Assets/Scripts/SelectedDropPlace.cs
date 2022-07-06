@@ -12,7 +12,7 @@ public class SelectedDropPlace : MonoBehaviour, IDropHandler
     public void OnDrop(PointerEventData eventData) {
         CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
         // プレイヤーの現在のコストポイント
-        int currentCostPoint = GameObject.Find("GameManeger").GetComponent<GameManeger>().playerCostPoint;
+        int currentCostPoint = GameObject.Find("GameManeger").GetComponent<GameManeger>().playerCardPoint;
         int currentHandCardNum = GetCardNumInHand(this.transform);
 
         int placeableCardNuminHand = GetPlaceableCardNuminHand(currentCostPoint);

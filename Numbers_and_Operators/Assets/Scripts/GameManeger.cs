@@ -5,13 +5,11 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class GameManeger : MonoBehaviour{
-    // コストポイントの最大値
-    const int MAX_COST_POINT = 16;
+using Constraints;
 
-    // 手札の最大枚数(演算・数字共通)
-    const int MAX_HAND_NUM = 5;
-   
+
+public class GameManeger : MonoBehaviour{
+  
 
     [SerializeField] CardController CardPrefab;
     [SerializeField] GameObject ResultPanel;
@@ -20,56 +18,53 @@ public class GameManeger : MonoBehaviour{
     [SerializeField] GameObject SkillPanel;
 
     // 敵側の手札
-    [SerializeField] Transform EnemyNumbersHandTransform, EnemyOperatorsHandTransform;
+    public Transform EnemyNumbersHandTransform, EnemyOperatorsHandTransform;
 
     // プレイヤーの手札
-    [SerializeField] Transform PlayerNumbersHandTransform, PlayerOperatorsHandTransform;
+    public Transform PlayerNumbersHandTransform, PlayerOperatorsHandTransform;
 
     // 敵の選んだカード
     [SerializeField] Transform EnemySelectedCardsTransform, PlayerSelectedCardsTransform;
 
-    // お互いのコストポイントテキスト
-    [SerializeField] TextMeshProUGUI EnemyCostPointText, PlayerCostPointText;
+    // お互いのカードポイントテキスト
+    public TextMeshProUGUI EnemyCardPointText, PlayerCardPointText;
 
 
 
 
     // それぞれの数字
-    [SerializeField] TextMeshProUGUI EnemyNumber, PlayerNumber;
+    public TextMeshProUGUI EnemyNumber, PlayerNumber;
 
     // 目標の数字
     [SerializeField] TextMeshProUGUI TargetValueText;
    
 
-    [SerializeField] GameObject ExchangeButton;
+
+    // カードポイント
+    public int enemyCardPoint, playerCardPoint;
+
+    List<string> OperatorsCardList = new List<string>(Const.OperatorsCardList);
+    List<string> NumbersCardList = new List<string>(Const.NumbersCardList);
+   
 
 
-
-    private List<string> allNumbersCardList = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8" };
-    private List<string> allOperatorsCardList = new List<string> { "Plus", "Minus", "Product" , "Quotient"};
-
-
-    // カードの重み
-    private List<float> OperatorCardWeight = new List<float> { 0.25f, 0.25f, 0.25f, 0.25f };
-
-    // コストポイント
-    public int enemyCostPoint, playerCostPoint;
+   
 
 
 
 
-    private bool IsPlayerTurn = true;
+    public bool IsPlayerTurn = true;
 
     void Start(){
         ResultPanel.SetActive(false);
         AddinitialCards(3, 3);
         TargetValueText.text = GetTargetValue(50, 100).ToString();
 
-        // 初期コストポイントの設定 & UIへの反映
-        enemyCostPoint = 2;
-        ApplyCostPointToUI(EnemyCostPointText, enemyCostPoint);
-        playerCostPoint = 2;
-        ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
+        // 初期カードポイントの設定 & UIへの反映
+        enemyCardPoint = 2;
+        ApplyCardPointToUI(EnemyCardPointText, enemyCardPoint);
+        playerCardPoint = 2;
+        ApplyCardPointToUI(PlayerCardPointText, playerCardPoint);
     }
 
     private void EnemyTurn() {
@@ -92,17 +87,17 @@ public class GameManeger : MonoBehaviour{
     private void GameTurnFlow() {
         if (IsPlayerTurn) {
             // プレイヤーの行動処理
-            CostPointTwoUp();
+            CardPointTwoUp();
 
 
         } else {
-            CostPointTwoUp();
+            CardPointTwoUp();
             EnemyTurn();
             if (IsGameFinished()) ShowResultPanel();
             else {
                 // カードを引く
-                string opetatorCardName = DrawCard(allOperatorsCardList);
-                string numberCardName = DrawCard(allNumbersCardList);
+                string opetatorCardName = DrawCard(OperatorsCardList);
+                string numberCardName = DrawCard(NumbersCardList);
                 AddCardToHand(EnemyOperatorsHandTransform, opetatorCardName);
                 AddCardToHand(EnemyNumbersHandTransform, numberCardName);
                 IsPlayerTurn = !IsPlayerTurn;
@@ -129,8 +124,8 @@ public class GameManeger : MonoBehaviour{
                 if (IsGameFinished()) ShowResultPanel();
                 else {
                     // カードを引く
-                    string opetatorCardName = DrawCard(allOperatorsCardList);
-                    string numberCardName = DrawCard(allNumbersCardList);
+                    string opetatorCardName = DrawCard(OperatorsCardList);
+                    string numberCardName = DrawCard(NumbersCardList);
                     AddCardToHand(PlayerOperatorsHandTransform, opetatorCardName);
                     AddCardToHand(PlayerNumbersHandTransform, numberCardName);
 
@@ -200,20 +195,20 @@ public class GameManeger : MonoBehaviour{
 
     
 
-    private void CostPointTwoUp() {
+    private void CardPointTwoUp() {
         if (IsPlayerTurn) {
-            playerCostPoint = Mathf.Min(MAX_COST_POINT, playerCostPoint + 2);
-            ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
+            playerCardPoint = Mathf.Min(Const.MAX_CARD_POINT, playerCardPoint + 2);
+            ApplyCardPointToUI(PlayerCardPointText, playerCardPoint);
         
         }
         else {
-            enemyCostPoint = Mathf.Min(MAX_COST_POINT, enemyCostPoint + 2);
-           ApplyCostPointToUI(EnemyCostPointText, enemyCostPoint);
+            enemyCardPoint = Mathf.Min(Const.MAX_CARD_POINT, enemyCardPoint + 2);
+           ApplyCardPointToUI(EnemyCardPointText, enemyCardPoint);
         }
     }
 
-    private void ApplyCostPointToUI(TextMeshProUGUI costPointText, int costPoint) {
-        costPointText.text = "CP : " + costPoint.ToString() + "/" + MAX_COST_POINT.ToString();
+    public void ApplyCardPointToUI(TextMeshProUGUI cardPointText, int cardPoint) {
+        cardPointText.text = "CP : " + cardPoint.ToString() + "/" + Const.MAX_CARD_POINT.ToString();
     }
 
 
@@ -251,44 +246,26 @@ public class GameManeger : MonoBehaviour{
 
     private void AddinitialCards(int NumbersCardNum, int OperatorsCardNum) {
         for(int i = 0; i < NumbersCardNum; i++) {
-            string NumberCardName = DrawCard(allNumbersCardList);
+            string NumberCardName = DrawCard(NumbersCardList);
             AddCardToHand(PlayerNumbersHandTransform, NumberCardName);
-            NumberCardName = DrawCard(allNumbersCardList);
+            NumberCardName = DrawCard(NumbersCardList);
             AddCardToHand(EnemyNumbersHandTransform ,NumberCardName);
         }
 
         for(int i = 0; i < OperatorsCardNum; i++) {
-            string OpetatorCardName = DrawCard(allOperatorsCardList);
+            string OpetatorCardName = DrawCard(OperatorsCardList);
             AddCardToHand(PlayerOperatorsHandTransform, OpetatorCardName);
-            OpetatorCardName = DrawCard(allOperatorsCardList);
+            OpetatorCardName = DrawCard(OperatorsCardList);
             AddCardToHand(EnemyOperatorsHandTransform , OpetatorCardName);
         }
     }
   
-    private void AddCardToHand(Transform Hand, string cardName) {
+    public void AddCardToHand(Transform Hand, string cardName) {
         CardController card = Instantiate(CardPrefab, Hand, false);
         card.Init(cardName);
     }
 
-    /*
-    private string DrawCardWithWeights(List<string> CardList, List<float> weights) {
-
-        if(CardList.Count != weights.Count) {
-            Debug.LogWarning("CardList.Count " + CardList.Count.ToString() + " do not equal to weights.Count " + weights.Count.ToString());
-        }
-        int _windex = CardList.Count - 1;
-        float rnd = Random.Range(0.0f, 1.0f);
-        float weightSum = 0.0f;
-
-        for (int i = 0; i < weights.Count; i++) {
-            if (weightSum <= rnd && rnd < weightSum + OperatorCardWeight[i]) _windex = i;
-            weightSum += OperatorCardWeight[i];
-        }
-
-        return CardList[_windex];
-    }
-    */
-    private string DrawCard(List<string> CardList) {
+    public string DrawCard(List<string> CardList) {
         int _index = Random.Range(0, CardList.Count);
         return CardList[_index];
     }
@@ -316,45 +293,7 @@ public class GameManeger : MonoBehaviour{
 
     }
 
-    /*
-    private int EvaluateFormula(string currentScore, List<CardController> selectedCards) {
-        int result = 0;
-       
-        try {
-            result = int.Parse(currentScore);
-        }
-        catch (System.FormatException) {
-            Debug.Log("Invalid Value");
-        }
-
-        int operatorCardIndex = 0;
-        int numberCardIndex = 1;
-
-        for(int i = 0; i < selectedCards.Count/2; i++) {
-            int numberCardValue = 0;
-            string operatorCardValue = selectedCards[operatorCardIndex].card.value;
-            try {
-                numberCardValue = int.Parse(selectedCards[numberCardIndex].card.value);
-            }
-            catch (System.FormatException) {
-                Debug.Log("Invalid Value");
-            }
-            if (operatorCardValue == "+") result = result + numberCardValue;
-            else if (operatorCardValue == "-") result = Mathf.Max(result - numberCardValue, 1);
-            else if (operatorCardValue == "*") result = result * numberCardValue;
-            else if (operatorCardValue == "//") result = Mathf.Max(result / numberCardValue, 1);
-            else Debug.LogWarning("Unsupported Operator");
-
-            operatorCardIndex += 2;
-            numberCardIndex += 2;
-
-        }
-
-      
-
-        return result;
-    }
-    */
+  
 
     public void OnRestartButton() {
         SceneManager.LoadScene("GameScene");
@@ -364,106 +303,12 @@ public class GameManeger : MonoBehaviour{
         SceneManager.LoadScene("TitleScene");
     }
 
-    public void OnExchangeButtonInSkillPanel() {
-
-        const int exchangeSkillPoint = 8;
-
-        if (playerCostPoint >= exchangeSkillPoint) {
-            // コストポイントを消費する
-            playerCostPoint = DecreaseCostPoint(playerCostPoint, exchangeSkillPoint);
-            ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
-
-            // お互いの数字を入れ替える
-            (EnemyNumber.text, PlayerNumber.text) = (PlayerNumber.text, EnemyNumber.text);
-
-
-            // スキルパネルを閉じる
-            SkillPanel.SetActive(false);
-        }
-
-
-      
-    }
-
-
-    private int DecreaseCostPoint(int currentSkillPoint ,int skillCost) {
-        return currentSkillPoint - skillCost;
-    }
-
-    public void OnDrawButtonInSkillPanel() {
-
-        const int drawSkillPoint = 4;
-
-        int currentCardInHand = PlayerOperatorsHandTransform.GetComponentsInChildren<CardController>().Length;
-
-        if(playerCostPoint >= drawSkillPoint && currentCardInHand < MAX_HAND_NUM) {
-            // コストポイントを消費する
-            playerCostPoint = DecreaseCostPoint(playerCostPoint, drawSkillPoint);
-            ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
-
-            // カードを引く
-            string opetatorCardName = DrawCard(allOperatorsCardList);
-            string numberCardName = DrawCard(allNumbersCardList);
-            AddCardToHand(PlayerOperatorsHandTransform, opetatorCardName);
-            AddCardToHand(PlayerNumbersHandTransform, numberCardName);
-
-
-            // スキルパネルを閉じる
-            SkillPanel.SetActive(false);
-        }
-
-
-    }
-
-    public void OnDownButtonInSkillPanel() {
-
-        const int downSkillPoint = 6;
-
-        if (playerCostPoint >= downSkillPoint) {
-            // コストポイントを消費する
-            playerCostPoint = DecreaseCostPoint(playerCostPoint, downSkillPoint);
-            ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
-
-            // 敵の数字をランダムに減少させる(from 10 to 30)
-            EnemyNumber.text = (Mathf.Max(IntParser(EnemyNumber.text) - Random.Range(10, 31), 1)).ToString();
-
-
-            // スキルパネルを閉じる
-            SkillPanel.SetActive(false);
-        }
-
-
-    }
-
-    public void OnUpButtonInSkillPanel() {
-
-        const int upSkillPoint = 6;
-
-        if (playerCostPoint >= upSkillPoint) {
-            // コストポイントを消費する
-            playerCostPoint = DecreaseCostPoint(playerCostPoint, upSkillPoint);
-            ApplyCostPointToUI(PlayerCostPointText, playerCostPoint);
-
-            // 敵の数字をランダムに上昇させる(from 10 to 30)
-            EnemyNumber.text = (IntParser(EnemyNumber.text) + Random.Range(10, 31)).ToString();
-
-
-            // スキルパネルを閉じる
-            SkillPanel.SetActive(false);
-        }
-
-
-    }
+    
 
     public void OnSkillButton() {
         if(IsPlayerTurn) SkillPanel.SetActive(true);
     }
-
-    public void OnBackButtonInSkillPanel() {
-        SkillPanel.SetActive(false);
-    }
-
-    private int IntParser(string numStr) {
+    public int IntParser(string numStr) {
         int numInt = 0;
         try {
             numInt = int.Parse(numStr);
