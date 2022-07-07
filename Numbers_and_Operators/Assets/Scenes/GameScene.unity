@@ -430,7 +430,7 @@ GameObject:
   - component: {fileID: 154724640}
   - component: {fileID: 154724639}
   m_Layer: 5
-  m_Name: 'EnemyCostPointText '
+  m_Name: 'EnemyCardPointText '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -815,6 +815,7 @@ GameObject:
   - component: {fileID: 327322333}
   - component: {fileID: 327322335}
   - component: {fileID: 327322334}
+  - component: {fileID: 327322336}
   m_Layer: 5
   m_Name: ResultPanel
   m_TagString: Untagged
@@ -883,6 +884,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 327322332}
   m_CullTransparentMesh: 1
+--- !u!114 &327322336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327322332}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3e772817399495ba19cabfbc53b5ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &349126235
 GameObject:
   m_ObjectHideFlags: 0
@@ -1207,8 +1220,8 @@ MonoBehaviour:
   PlayerOperatorsHandTransform: {fileID: 1773150717}
   EnemySelectedCardsTransform: {fileID: 849262442}
   PlayerSelectedCardsTransform: {fileID: 1637433741}
-  EnemyCardPointText: {fileID: 0}
-  PlayerCardPointText: {fileID: 0}
+  EnemyCardPointText: {fileID: 154724639}
+  PlayerCardPointText: {fileID: 1850578537}
   EnemyNumber: {fileID: 1501596492}
   PlayerNumber: {fileID: 891587486}
   TargetValueText: {fileID: 25858072}
@@ -2663,8 +2676,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 492929966}
-        m_TargetAssemblyTypeName: GameManeger, Assembly-CSharp
+      - m_Target: {fileID: 327322336}
+        m_TargetAssemblyTypeName: ResultPanelManeger, Assembly-CSharp
         m_MethodName: OnRestartButton
         m_Mode: 1
         m_Arguments:
@@ -3179,7 +3192,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '8CP : Exchange each number'
+  m_text: '12CP : Exchange each number'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4442,7 +4455,7 @@ GameObject:
   - component: {fileID: 1850578538}
   - component: {fileID: 1850578537}
   m_Layer: 5
-  m_Name: PlayerCostPointText
+  m_Name: PlayerCardtPointText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5054,8 +5067,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 492929966}
-        m_TargetAssemblyTypeName: GameManeger, Assembly-CSharp
+      - m_Target: {fileID: 327322336}
+        m_TargetAssemblyTypeName: ResultPanelManeger, Assembly-CSharp
         m_MethodName: OnBackToTitleButton
         m_Mode: 1
         m_Arguments:

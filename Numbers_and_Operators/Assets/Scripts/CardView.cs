@@ -9,8 +9,7 @@ public class CardView : MonoBehaviour
     [SerializeField] TextMeshProUGUI symbolText;
     [SerializeField] GameObject selectableFrame;
 
-    public void Show(CardModel cardmodel)
-    {
+    public void Show(CardModel cardmodel){
         symbolText.text = cardmodel.value;
     }
 

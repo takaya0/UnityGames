@@ -4,6 +4,8 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+using Constraints;
+
 
 public class SelectedDropPlace : MonoBehaviour, IDropHandler
 {
@@ -11,7 +13,7 @@ public class SelectedDropPlace : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData) {
         CardMovement card = eventData.pointerDrag.GetComponent<CardMovement>();
-        // ƒvƒŒƒCƒ„[‚ÌŒ»İ‚ÌƒRƒXƒgƒ|ƒCƒ“ƒg
+        
         int currentCostPoint = GameObject.Find("GameManeger").GetComponent<GameManeger>().playerCardPoint;
         int currentHandCardNum = GetCardNumInHand(this.transform);
 
@@ -30,14 +32,9 @@ public class SelectedDropPlace : MonoBehaviour, IDropHandler
     }
 
     private int GetPlaceableCardNuminHand(int currentCostPoint) {
-        // èD‚ÌÅ‘å–‡”‚ğŒvZ
-        /*
-         * ƒRƒXƒgƒ|ƒCƒ“ƒg‚ª4ˆÈ‰º : 2–‡
-         * ƒRƒXƒgƒ|ƒCƒ“ƒg‚ª5ˆÈã : 4–‡
-         * 
-         */
-        if (currentCostPoint <= 4) {
-            return 2; ;
+        // ç½®ã‘ã‚‹ã‚«ãƒ¼ãƒ‰ã®æšæ•°ã‚’å–å¾—
+        if (currentCostPoint <= Const.DOUBLE_OPERATE_THRESHOLD) {
+            return 2; 
         }
         else {
             return 4;

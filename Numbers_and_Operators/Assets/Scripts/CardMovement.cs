@@ -21,8 +21,6 @@ public class CardMovement : MonoBehaviour, IDragHandler, IBeginDragHandler, IEnd
         GetComponent<CanvasGroup>().blocksRaycasts = true;
     }
 
-    // Start is called before the first frame update
-
     public void SetCardTransform(Transform parentTransform) {
         defaultParent = parentTransform;
         transform.SetParent(defaultParent);

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Constraints;
+
 public class SkillPanelManeger : MonoBehaviour
 {
     [SerializeField] GameObject SkillPanel;
@@ -14,23 +16,59 @@ public class SkillPanelManeger : MonoBehaviour
     }
 
     public void OnExchangeButtonInSkillPanel() {
-        skillManeger.ExchangeEachNumbers(gameManeger.PlayerCardPointText, gameManeger.playerCardPoint);
-        SkillPanel.SetActive(false);
+        int currentCardPoint = gameManeger.playerCardPoint;
+        if(SkillCost.exchangeSkillCost <= currentCardPoint) {
+            currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.exchangeSkillCost);
+            gameManeger.playerCardPoint = currentCardPoint;
+
+            gameManeger.ApplyCardPointToUI(gameManeger.PlayerCardPointText, currentCardPoint);
+            skillManeger.ExchangeEachNumbers();
+            SkillPanel.SetActive(false);
+        }
+       
     }
 
     public void OnDrawButtonInSkillPanel() {
-        skillManeger.DrawCards(gameManeger.PlayerOperatorsHandTransform, gameManeger.PlayerNumbersHandTransform, gameManeger.PlayerCardPointText, gameManeger.playerCardPoint);
-        SkillPanel.SetActive(false);
+
+        int currentCardPoint = gameManeger.playerCardPoint;
+        if (SkillCost.drawSkillCost <= currentCardPoint) {
+            currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
+            gameManeger.playerCardPoint = currentCardPoint;
+
+            gameManeger.ApplyCardPointToUI(gameManeger.PlayerCardPointText, currentCardPoint);
+
+            skillManeger.DrawCards(gameManeger.PlayerOperatorsHandTransform, gameManeger.PlayerNumbersHandTransform);
+            SkillPanel.SetActive(false);
+        }
     }
 
     public void OnDownButtonInSkillPanel() {
-        skillManeger.DownCardPoint(gameManeger.EnemyNumber, gameManeger.PlayerCardPointText, gameManeger.playerCardPoint);
-        SkillPanel.SetActive(false);
+        int currentCardPoint = gameManeger.playerCardPoint;
+        if(SkillCost.downSkillCost <= currentCardPoint) {
+
+            currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
+            gameManeger.playerCardPoint = currentCardPoint;
+
+            gameManeger.ApplyCardPointToUI(gameManeger.PlayerCardPointText, currentCardPoint);
+
+            skillManeger.DownCardPoint(gameManeger.EnemyNumber);
+            SkillPanel.SetActive(false);
+
+        }
+       
     }
 
     public void OnUpButtonInSkillPanel() {
-        skillManeger.UpCardPoint(gameManeger.EnemyNumber, gameManeger.PlayerCardPointText, gameManeger.playerCardPoint);
-        SkillPanel.SetActive(false);
+        int currentCardPoint = gameManeger.playerCardPoint;
+        if( SkillCost.upSkillCost <= currentCardPoint) {
+            currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
+            gameManeger.playerCardPoint = currentCardPoint;
+
+            gameManeger.ApplyCardPointToUI(gameManeger.PlayerCardPointText, currentCardPoint);
+            skillManeger.UpCardPoint(gameManeger.EnemyNumber);
+            SkillPanel.SetActive(false);
+        }
+      
     }
 
     public void OnBackButtonInSkillPanel() {

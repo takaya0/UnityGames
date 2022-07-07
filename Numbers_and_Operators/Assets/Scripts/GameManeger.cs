@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using TMPro;
 
 using Constraints;
@@ -30,8 +28,6 @@ public class GameManeger : MonoBehaviour{
     public TextMeshProUGUI EnemyCardPointText, PlayerCardPointText;
 
 
-
-
     // それぞれの数字
     public TextMeshProUGUI EnemyNumber, PlayerNumber;
 
@@ -39,26 +35,18 @@ public class GameManeger : MonoBehaviour{
     [SerializeField] TextMeshProUGUI TargetValueText;
    
 
-
     // カードポイント
     public int enemyCardPoint, playerCardPoint;
 
     List<string> OperatorsCardList = new List<string>(Const.OperatorsCardList);
     List<string> NumbersCardList = new List<string>(Const.NumbersCardList);
    
-
-
-   
-
-
-
-
     public bool IsPlayerTurn = true;
 
     void Start(){
         ResultPanel.SetActive(false);
-        AddinitialCards(3, 3);
-        TargetValueText.text = GetTargetValue(50, 100).ToString();
+        AddInitialCards(Const.INIT_OPERATER_CARD_NUM, Const.INIT_NUMBER_CARD_NUM);
+        TargetValueText.text = GetTargetValue(Const.MIN_TARGET_VALUE, Const.MAX_TARGET_VALUE).ToString();
 
         // 初期カードポイントの設定 & UIへの反映
         enemyCardPoint = 2;
@@ -113,9 +101,6 @@ public class GameManeger : MonoBehaviour{
 
             // 選ばれたカードを取得
             List<CardController> selectedCards = GetSelectedCards(PlayerSelectedCardsTransform);
-
-        
-
 
             if (CheckSelectedCards(selectedCards)) {
                 CaluculateScore(selectedCards);
@@ -244,7 +229,7 @@ public class GameManeger : MonoBehaviour{
 
   
 
-    private void AddinitialCards(int NumbersCardNum, int OperatorsCardNum) {
+    private void AddInitialCards(int NumbersCardNum, int OperatorsCardNum) {
         for(int i = 0; i < NumbersCardNum; i++) {
             string NumberCardName = DrawCard(NumbersCardList);
             AddCardToHand(PlayerNumbersHandTransform, NumberCardName);
@@ -271,7 +256,8 @@ public class GameManeger : MonoBehaviour{
     }
 
     private int GetTargetValue(int minValue, int maxValue) {
-        int TargetValue = Random.Range(minValue, maxValue);
+        // 目標値をランダムに生成(両端を含む)
+        int TargetValue = Random.Range(minValue, maxValue + 1);
         return TargetValue;
     }
 
@@ -292,19 +278,6 @@ public class GameManeger : MonoBehaviour{
         else return false;
 
     }
-
-  
-
-    public void OnRestartButton() {
-        SceneManager.LoadScene("GameScene");
-    }
-
-    public void OnBackToTitleButton() {
-        SceneManager.LoadScene("TitleScene");
-    }
-
-    
-
     public void OnSkillButton() {
         if(IsPlayerTurn) SkillPanel.SetActive(true);
     }
