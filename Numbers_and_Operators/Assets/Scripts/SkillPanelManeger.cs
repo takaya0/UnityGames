@@ -9,6 +9,7 @@ public class SkillPanelManeger : MonoBehaviour
     [SerializeField] GameObject SkillPanel;
     private GameManeger gameManeger;
     private SkillManeger skillManeger;
+    [SerializeField] UIManeger uiManeger;
 
     private void Start() {
         skillManeger = GameObject.Find("SkillManeger").GetComponent<SkillManeger>();
@@ -21,7 +22,7 @@ public class SkillPanelManeger : MonoBehaviour
             currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.exchangeSkillCost);
             gameManeger.playerCardPoint = currentCardPoint;
 
-            gameManeger.ApplyCardPointToUI(gameManeger.PlayerCardPointText, currentCardPoint);
+            uiManeger.SetPlayerCardPointText(currentCardPoint);
             skillManeger.ExchangeEachNumbers();
             SkillPanel.SetActive(false);
         }
@@ -35,7 +36,7 @@ public class SkillPanelManeger : MonoBehaviour
             currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
             gameManeger.playerCardPoint = currentCardPoint;
 
-            gameManeger.ApplyCardPointToUI(gameManeger.PlayerCardPointText, currentCardPoint);
+            uiManeger.SetPlayerCardPointText(currentCardPoint);
 
             skillManeger.DrawCards(gameManeger.PlayerOperatorsHandTransform, gameManeger.PlayerNumbersHandTransform);
             SkillPanel.SetActive(false);
@@ -46,13 +47,15 @@ public class SkillPanelManeger : MonoBehaviour
         int currentCardPoint = gameManeger.playerCardPoint;
         if(SkillCost.downSkillCost <= currentCardPoint) {
 
+            // スキルポイントを消費。
             currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
             gameManeger.playerCardPoint = currentCardPoint;
+            uiManeger.SetPlayerCardPointText(gameManeger.playerCardPoint);
 
-            gameManeger.ApplyCardPointToUI(gameManeger.PlayerCardPointText, currentCardPoint);
-
-            skillManeger.DownCardPoint(gameManeger.EnemyNumber);
-            SkillPanel.SetActive(false);
+            // 敵のスコアの減少
+            int currentEnemyScore = gameManeger.enemyScore;
+            gameManeger.enemyScore = skillManeger.DownScore(currentEnemyScore);
+            uiManeger.SetEnemyScoreText(gameManeger.enemyScore);
 
         }
        
@@ -61,11 +64,18 @@ public class SkillPanelManeger : MonoBehaviour
     public void OnUpButtonInSkillPanel() {
         int currentCardPoint = gameManeger.playerCardPoint;
         if( SkillCost.upSkillCost <= currentCardPoint) {
+
+            // スキルポイントを消費。
             currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
             gameManeger.playerCardPoint = currentCardPoint;
+            uiManeger.SetPlayerCardPointText(gameManeger.playerCardPoint);
 
-            gameManeger.ApplyCardPointToUI(gameManeger.PlayerCardPointText, currentCardPoint);
-            skillManeger.UpCardPoint(gameManeger.EnemyNumber);
+            // 敵のスコアの上昇
+            int currentEnemyScore = gameManeger.enemyScore;
+            gameManeger.enemyScore = skillManeger.UpScore(currentEnemyScore);
+            uiManeger.SetEnemyScoreText(gameManeger.enemyScore);
+           
+          
             SkillPanel.SetActive(false);
         }
       

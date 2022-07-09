@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Constraints;
-public class SkillManeger : MonoBehaviour
-{
+public class SkillManeger : MonoBehaviour{
    
     private GameManeger gameManeger;
 
@@ -20,9 +19,9 @@ public class SkillManeger : MonoBehaviour
     public int DecreaseCardPoint(int currentSkillPoint, int skillCost) {
         return currentSkillPoint - skillCost;
     }
-
+    
     public void ExchangeEachNumbers() {
-        (gameManeger.EnemyNumber.text, gameManeger.PlayerNumber.text) = (gameManeger.PlayerNumber.text, gameManeger.EnemyNumber.text);
+        //(gameManeger.enemyScore, gameManeger.) = (gameManeger.PlayerNumber.text, gameManeger.EnemyNumber.text);
     }
     public void DrawCards(Transform operatorHandTransform,Transform numbersHandTransform) {
 
@@ -39,17 +38,13 @@ public class SkillManeger : MonoBehaviour
     }
 
 
-    public void DownCardPoint(TextMeshProUGUI number) {
-
-        number.text = (Mathf.Max(gameManeger.IntParser(number.text) - Random.Range(10, 31), 1)).ToString();
+    public int DownScore(int currentScore) {
+        int downScore = Mathf.Max(currentScore - Random.Range(10, 31), 1);
+        return downScore;
     }
 
-    public void UpCardPoint(TextMeshProUGUI number) {
-    
-        number.text = (Mathf.Max(gameManeger.IntParser(number.text) + Random.Range(10, 31), 1)).ToString();
+    public int UpScore(int currentScore) {
+        int upScore = currentScore + Random.Range(10, 31);
+        return upScore;
     }
-
-
-
-
 }

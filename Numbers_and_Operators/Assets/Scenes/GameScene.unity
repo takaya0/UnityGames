@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 25858073}
   - component: {fileID: 25858072}
   m_Layer: 5
-  m_Name: TargetValueText
+  m_Name: TargetScoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -358,8 +358,8 @@ RectTransform:
   - {fileID: 25858074}
   - {fileID: 1501596491}
   - {fileID: 891587485}
-  - {fileID: 1637433741}
   - {fileID: 849262442}
+  - {fileID: 1637433741}
   - {fileID: 1505895029}
   - {fileID: 154724638}
   - {fileID: 1850578536}
@@ -374,6 +374,55 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &83100777
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 83100779}
+  - component: {fileID: 83100778}
+  m_Layer: 0
+  m_Name: UIManeger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &83100778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83100777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d393cd59e73784f4a86a26b4fde06fc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyCardPointText: {fileID: 154724639}
+  PlayerCardPointText: {fileID: 1850578537}
+  EnemyScoreText: {fileID: 1501596492}
+  PlayerScoreText: {fileID: 891587486}
+  TargetScoreText: {fileID: 25858072}
+--- !u!4 &83100779
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83100777}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 797.7689, y: 279.52466, z: -6.545916}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &113546982
 GameObject:
   m_ObjectHideFlags: 0
@@ -1166,6 +1215,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 383076542}
   m_CullTransparentMesh: 1
+--- !u!1 &392779572
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 392779574}
+  - component: {fileID: 392779573}
+  m_Layer: 0
+  m_Name: EnemyPlayer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &392779573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 392779572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afc7d1ddab35ea643b679f434817657f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiManeger: {fileID: 83100778}
+--- !u!4 &392779574
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 392779572}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 797.7689, y: 279.52466, z: -6.545916}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &492929963
 GameObject:
   m_ObjectHideFlags: 0
@@ -1213,6 +1307,8 @@ MonoBehaviour:
   CardPrefab: {fileID: -5884803061201785173, guid: 51885248741fe5149a38c9af49246f43, type: 3}
   ResultPanel: {fileID: 327322332}
   ResultText: {fileID: 1938055795}
+  enemyAIPlayer: {fileID: 392779573}
+  uiManeger: {fileID: 83100778}
   SkillPanel: {fileID: 507570933}
   EnemyNumbersHandTransform: {fileID: 965757074}
   EnemyOperatorsHandTransform: {fileID: 1187979845}
@@ -1220,14 +1316,12 @@ MonoBehaviour:
   PlayerOperatorsHandTransform: {fileID: 1773150717}
   EnemySelectedCardsTransform: {fileID: 849262442}
   PlayerSelectedCardsTransform: {fileID: 1637433741}
-  EnemyCardPointText: {fileID: 154724639}
-  PlayerCardPointText: {fileID: 1850578537}
-  EnemyNumber: {fileID: 1501596492}
-  PlayerNumber: {fileID: 891587486}
-  TargetValueText: {fileID: 25858072}
-  enemyCardPoint: 0
-  playerCardPoint: 0
+  enemyCardPoint: 1
+  playerCardPoint: 1
   IsPlayerTurn: 1
+  targetScore: 0
+  playerScore: 1
+  enemyScore: 1
 --- !u!1 &507570933
 GameObject:
   m_ObjectHideFlags: 0
@@ -1323,6 +1417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SkillPanel: {fileID: 507570933}
+  uiManeger: {fileID: 83100778}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2469,7 +2564,7 @@ GameObject:
   - component: {fileID: 891587487}
   - component: {fileID: 891587486}
   m_Layer: 5
-  m_Name: PlayerNumber
+  m_Name: PlayerScoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3415,7 +3510,7 @@ GameObject:
   - component: {fileID: 1501596493}
   - component: {fileID: 1501596492}
   m_Layer: 5
-  m_Name: EnemyNumber
+  m_Name: EnemyScoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

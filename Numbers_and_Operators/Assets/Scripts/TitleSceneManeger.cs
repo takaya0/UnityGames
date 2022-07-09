@@ -11,14 +11,6 @@ public class TitleSceneManeger : MonoBehaviour
     {
         
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
     public void OnStartButton() {
         SceneManager.LoadScene("GameScene");
     }
