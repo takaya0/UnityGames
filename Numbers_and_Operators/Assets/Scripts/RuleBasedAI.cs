@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Constraints;
+
 public class RuleBasedAI : MonoBehaviour
 {
    
@@ -9,23 +11,35 @@ public class RuleBasedAI : MonoBehaviour
     private GameManeger gameManeger;
     private SkillManeger skillManeger;
 
-    [SerializeField] UIManeger uiManeger;
+    public Transform operatorsHandTransform;
+    public Transform numbersHandTransform;
+    public int cardPoint;
+    public int score;
+
+
+
+   [SerializeField] UIManeger uiManeger;
+
+
+   
     // Start is called before the first frame update
     void Start(){
+        cardPoint = Const.INIT_CARD_POINT;
+        score = Const.INIT_SCORE;
         gameManeger = GameObject.Find("GameManeger").GetComponent<GameManeger>();
         skillManeger = GameObject.Find("SkillManeger").GetComponent<SkillManeger>();
     }
 
     public IEnumerator EnemyActions() {
         //gameManeger = GameObject.Find("GameManeger").GetComponent<GameManeger>();
-        CardController[] operatorsCardList = gameManeger.EnemyOperatorsHandTransform.GetComponentsInChildren<CardController>();
-        CardController[] numbersCardList = gameManeger.EnemyNumbersHandTransform.GetComponentsInChildren<CardController>();
+        CardController[] operatorsCardList = operatorsHandTransform.GetComponentsInChildren<CardController>();
+        CardController[] numbersCardList = numbersHandTransform.GetComponentsInChildren<CardController>();
 
-        // ƒJ[ƒh‚ğ‘I‚Ô
+        // ï¿½Jï¿½[ï¿½hï¿½ï¿½Iï¿½ï¿½
         CardController operatorCard = operatorsCardList[Random.Range(0, operatorsCardList.Length)];
         CardController numberCard = numbersCardList[Random.Range(0, numbersCardList.Length)];
 
-        // ƒJ[ƒh‚ğ”z’u‚·‚é
+        // ï¿½Jï¿½[ï¿½hï¿½ï¿½zï¿½uï¿½ï¿½ï¿½ï¿½
         yield return new WaitForSeconds(1);
         operatorCard.movement.SetCardTransform(gameManeger.EnemySelectedCardsTransform);
         yield return new WaitForSeconds(1);
@@ -33,7 +47,7 @@ public class RuleBasedAI : MonoBehaviour
         yield return new WaitForSeconds(1);
 
         List<CardController> selectedCards = gameManeger.GetSelectedCards(gameManeger.EnemySelectedCardsTransform);
-        int score = gameManeger.CaluculateScore(gameManeger.enemyScore, selectedCards);
+        score = gameManeger.CaluculateScore(score, selectedCards);
         uiManeger.SetEnemyScoreText(score);
 
         foreach (CardController card in selectedCards) card.Vanish();

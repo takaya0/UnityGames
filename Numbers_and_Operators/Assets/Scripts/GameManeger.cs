@@ -13,23 +13,16 @@ public class GameManeger : MonoBehaviour{
     [SerializeField] GameObject ResultPanel;
     [SerializeField] TextMeshProUGUI ResultText;
 
+    [SerializeField] PlayerManeger player;
     [SerializeField] RuleBasedAI enemyAIPlayer;
     [SerializeField] UIManeger uiManeger;
 
 
     [SerializeField] GameObject SkillPanel;
 
-    // 敵側の手札
-    public Transform EnemyNumbersHandTransform, EnemyOperatorsHandTransform;
-
-    // プレイヤーの手札
-    public Transform PlayerNumbersHandTransform, PlayerOperatorsHandTransform;
-
+  
     // 選んだカード
     public Transform EnemySelectedCardsTransform, PlayerSelectedCardsTransform;
-
-    // カードポイント
-    public int enemyCardPoint, playerCardPoint;
 
     List<string> OperatorsCardList = new List<string>(Const.OperatorsCardList);
     List<string> NumbersCardList = new List<string>(Const.NumbersCardList);
@@ -38,8 +31,7 @@ public class GameManeger : MonoBehaviour{
 
     // ターゲットの数字
     public int targetScore;
-    // それぞれの数字
-    public int playerScore = 1, enemyScore = 1;
+  
 
 
     void Start(){
@@ -48,11 +40,9 @@ public class GameManeger : MonoBehaviour{
         targetScore = GetTargetScore(Const.MIN_TARGET_VALUE, Const.MAX_TARGET_VALUE);
         uiManeger.SetTargetScoreText(targetScore);
 
-        // 初期カードポイントの設定 & UIへの反映
-        enemyCardPoint = 2;
-        uiManeger.SetEnemyCardPointText(enemyCardPoint);
-        playerCardPoint = 2;
-        uiManeger.SetPlayerCardPointText(playerCardPoint);
+        // 初期カードポイントのUIへの反映
+        uiManeger.SetEnemyCardPointText(enemyAIPlayer.cardPoint);
+        uiManeger.SetPlayerCardPointText(player.cardPoint);
     }
 
     private void GameTurnFlow() {
@@ -67,13 +57,13 @@ public class GameManeger : MonoBehaviour{
             StopAllCoroutines();
             StartCoroutine(enemyAIPlayer.EnemyActions());
             
-            if (IsGameFinished()) ShowResultPanel();
+            if (IsGameFinished(enemyAIPlayer.score)) ShowResultPanel();
             else {
                 // カードを引く
                 string opetatorCardName = DrawCard(OperatorsCardList);
                 string numberCardName = DrawCard(NumbersCardList);
-                AddCardToHand(EnemyOperatorsHandTransform, opetatorCardName);
-                AddCardToHand(EnemyNumbersHandTransform, numberCardName);
+                AddCardToHand(enemyAIPlayer.operatorsHandTransform, opetatorCardName);
+                AddCardToHand(enemyAIPlayer.numbersHandTransform, numberCardName);
                 IsPlayerTurn = !IsPlayerTurn;
                 GameTurnFlow();
 
@@ -89,32 +79,31 @@ public class GameManeger : MonoBehaviour{
             List<CardController> selectedCards = GetSelectedCards(PlayerSelectedCardsTransform);
 
             if (CheckSelectedCards(selectedCards)) {
-                playerScore = CaluculateScore(playerScore, selectedCards);
-                uiManeger.SetPlayerScoreText(playerScore);
+                player.score = CaluculateScore(player.score, selectedCards);
+                uiManeger.SetPlayerScoreText(player.score);
                 foreach (CardController card in selectedCards) card.Vanish();
 
                 // ゲームが終了したら、結果パネルを出す
-                if (IsGameFinished()) ShowResultPanel();
+                if (IsGameFinished(player.score)) ShowResultPanel();
                 else {
                     // カードを引く
                     string opetatorCardName = DrawCard(OperatorsCardList);
                     string numberCardName = DrawCard(NumbersCardList);
-                    AddCardToHand(PlayerOperatorsHandTransform, opetatorCardName);
-                    AddCardToHand(PlayerNumbersHandTransform, numberCardName);
+                    AddCardToHand(player.operatorsHandTransform, opetatorCardName);
+                    AddCardToHand(player.numbersHandTransform, numberCardName);
 
                     IsPlayerTurn = !IsPlayerTurn;
                     GameTurnFlow();
-
                 }
             } else {
                 for (int i = 0; i < selectedCards.Count; i++) {
                     string kind = selectedCards[i].card.kind;
                     if (kind == "number") {
-                        if (IsPlayerTurn) selectedCards[i].movement.SetCardTransform(PlayerNumbersHandTransform);
-                        else selectedCards[i].movement.SetCardTransform(EnemyNumbersHandTransform);
+                        if (IsPlayerTurn) selectedCards[i].movement.SetCardTransform(player.numbersHandTransform);
+                        else selectedCards[i].movement.SetCardTransform(enemyAIPlayer.numbersHandTransform);
                     } else {
-                        if (IsPlayerTurn) selectedCards[i].movement.SetCardTransform(PlayerOperatorsHandTransform);
-                        else selectedCards[i].movement.SetCardTransform(EnemyOperatorsHandTransform);
+                        if (IsPlayerTurn) selectedCards[i].movement.SetCardTransform(player.operatorsHandTransform);
+                        else selectedCards[i].movement.SetCardTransform(enemyAIPlayer.operatorsHandTransform);
                     }
                 }
             }
@@ -135,8 +124,7 @@ public class GameManeger : MonoBehaviour{
     }
 
     public int CaluculateScore(int currentScore, List<CardController> selectedCards) {
-        // 選んだカードで演算して、UIに反映  
-
+      
         // 式を作成
         string formula = GetFormulaFromSelectedCards(currentScore.ToString(), selectedCards);
         Debug.Log(formula);
@@ -147,21 +135,16 @@ public class GameManeger : MonoBehaviour{
         return score;
     }
 
-    
-
     private void CardPointTwoUp() {
         if (IsPlayerTurn) {
-            playerCardPoint = Mathf.Min(Const.MAX_CARD_POINT, playerCardPoint + 2);
-            uiManeger.SetPlayerCardPointText(playerCardPoint);
-        
-        }
-        else {
-           enemyCardPoint = Mathf.Min(Const.MAX_CARD_POINT, enemyCardPoint + 2);
-            uiManeger.SetEnemyCardPointText(enemyCardPoint);
+            player.cardPoint = Mathf.Min(Const.MAX_CARD_POINT, player.cardPoint + 2);
+            uiManeger.SetPlayerCardPointText(player.cardPoint);  
+        } else {
+           enemyAIPlayer.cardPoint = Mathf.Min(Const.MAX_CARD_POINT, enemyAIPlayer.cardPoint + 2);
+            uiManeger.SetEnemyCardPointText(enemyAIPlayer.cardPoint);
         }
     }
 
-  
     private bool CheckSelectedCards(List<CardController> selectedCards) {
 
         //　2枚 or 4枚選ばれているか確認
@@ -192,21 +175,19 @@ public class GameManeger : MonoBehaviour{
         return selectedCards;
     }
 
-  
-
     private void AddInitCards(int NumbersCardNum, int OperatorsCardNum) {
         for(int i = 0; i < NumbersCardNum; i++) {
             string NumberCardName = DrawCard(NumbersCardList);
-            AddCardToHand(PlayerNumbersHandTransform, NumberCardName);
+            AddCardToHand(player.numbersHandTransform, NumberCardName);
             NumberCardName = DrawCard(NumbersCardList);
-            AddCardToHand(EnemyNumbersHandTransform ,NumberCardName);
+            AddCardToHand(enemyAIPlayer.numbersHandTransform ,NumberCardName);
         }
 
         for(int i = 0; i < OperatorsCardNum; i++) {
             string OpetatorCardName = DrawCard(OperatorsCardList);
-            AddCardToHand(PlayerOperatorsHandTransform, OpetatorCardName);
+            AddCardToHand(player.operatorsHandTransform, OpetatorCardName);
             OpetatorCardName = DrawCard(OperatorsCardList);
-            AddCardToHand(EnemyOperatorsHandTransform , OpetatorCardName);
+            AddCardToHand(enemyAIPlayer.operatorsHandTransform , OpetatorCardName);
         }
     }
   
@@ -226,11 +207,8 @@ public class GameManeger : MonoBehaviour{
         return _targetScore;
     }
 
-    private bool IsGameFinished() {
-        int TargetValue = 0;
-        int Score = 1;
-        if (Score - TargetValue == 0) return true;
-        else return false;
+    private bool IsGameFinished(int currentScore) {
+        return currentScore == targetScore;
 
     }
     public void OnSkillButton() {

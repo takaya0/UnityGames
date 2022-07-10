@@ -421,7 +421,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &113546982
 GameObject:
@@ -1244,6 +1244,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afc7d1ddab35ea643b679f434817657f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  operatorsHandTransform: {fileID: 1187979845}
+  numbersHandTransform: {fileID: 965757074}
+  cardPoint: 0
   uiManeger: {fileID: 83100778}
 --- !u!4 &392779574
 Transform:
@@ -1258,7 +1261,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &492929963
 GameObject:
@@ -1314,6 +1317,7 @@ MonoBehaviour:
   EnemyOperatorsHandTransform: {fileID: 1187979845}
   PlayerNumbersHandTransform: {fileID: 206140108}
   PlayerOperatorsHandTransform: {fileID: 1773150717}
+  player: {fileID: 711323335}
   EnemySelectedCardsTransform: {fileID: 849262442}
   PlayerSelectedCardsTransform: {fileID: 1637433741}
   enemyCardPoint: 1
@@ -1772,6 +1776,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 710199311}
   m_CullTransparentMesh: 1
+--- !u!1 &711323334
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 711323336}
+  - component: {fileID: 711323335}
+  m_Layer: 0
+  m_Name: Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &711323335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711323334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e399dd8b1218d45c3a1f28f077070eb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  operatorsHandTransform: {fileID: 1773150717}
+  numbersHandTransform: {fileID: 206140108}
+  cardPoint: 0
+--- !u!4 &711323336
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 711323334}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 797.4608, y: 283.08707, z: -6.406693}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &713410378
 GameObject:
   m_ObjectHideFlags: 0

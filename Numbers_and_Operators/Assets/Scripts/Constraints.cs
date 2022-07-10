@@ -16,10 +16,12 @@ namespace Constraints {
         public const int MAX_TARGET_VALUE = 80;
         // 2演算式が可能かどうかの閾値
         public const int DOUBLE_OPERATE_THRESHOLD = 6;
-        
-
+        // スコアの初期値
+        public const int INIT_SCORE = 1;
         // 手札の最大枚数
         public const int MAX_HAND_NUM = 5;
+        // カードポイントの初期値
+        public const int INIT_CARD_POINT = 2;
         // カードポイント(CP)の最大値
         public const int MAX_CARD_POINT = 16;
         // 演算カードのリスト

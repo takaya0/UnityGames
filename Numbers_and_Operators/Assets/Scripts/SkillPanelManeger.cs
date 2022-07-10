@@ -7,20 +7,23 @@ using Constraints;
 public class SkillPanelManeger : MonoBehaviour
 {
     [SerializeField] GameObject SkillPanel;
-    private GameManeger gameManeger;
+   
     private SkillManeger skillManeger;
     [SerializeField] UIManeger uiManeger;
 
+    private PlayerManeger player;
+    private RuleBasedAI enemyAIPlayer;
     private void Start() {
         skillManeger = GameObject.Find("SkillManeger").GetComponent<SkillManeger>();
-        gameManeger = GameObject.Find("GameManeger").GetComponent<GameManeger>();
+        player = GameObject.Find("Player").GetComponent<PlayerManeger>();
+        enemyAIPlayer = GameObject.Find("EnemyPlayer").GetComponent<RuleBasedAI>();
     }
 
     public void OnExchangeButtonInSkillPanel() {
-        int currentCardPoint = gameManeger.playerCardPoint;
+        int currentCardPoint = player.cardPoint;
         if(SkillCost.exchangeSkillCost <= currentCardPoint) {
             currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.exchangeSkillCost);
-            gameManeger.playerCardPoint = currentCardPoint;
+            player.cardPoint = currentCardPoint;
 
             uiManeger.SetPlayerCardPointText(currentCardPoint);
             skillManeger.ExchangeEachNumbers();
@@ -31,49 +34,47 @@ public class SkillPanelManeger : MonoBehaviour
 
     public void OnDrawButtonInSkillPanel() {
 
-        int currentCardPoint = gameManeger.playerCardPoint;
+        int currentCardPoint = player.cardPoint;
         if (SkillCost.drawSkillCost <= currentCardPoint) {
             currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
-            gameManeger.playerCardPoint = currentCardPoint;
+            player.cardPoint = currentCardPoint;
 
             uiManeger.SetPlayerCardPointText(currentCardPoint);
 
-            skillManeger.DrawCards(gameManeger.PlayerOperatorsHandTransform, gameManeger.PlayerNumbersHandTransform);
+            skillManeger.DrawCards(player.operatorsHandTransform, player.numbersHandTransform);
             SkillPanel.SetActive(false);
         }
     }
 
     public void OnDownButtonInSkillPanel() {
-        int currentCardPoint = gameManeger.playerCardPoint;
+        int currentCardPoint = player.cardPoint;
         if(SkillCost.downSkillCost <= currentCardPoint) {
 
-            // ƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚ðÁ”ïB
+            // ï¿½Xï¿½Lï¿½ï¿½ï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
             currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
-            gameManeger.playerCardPoint = currentCardPoint;
-            uiManeger.SetPlayerCardPointText(gameManeger.playerCardPoint);
+            player.cardPoint = currentCardPoint;
+            uiManeger.SetPlayerCardPointText(player.cardPoint);
 
-            // “G‚ÌƒXƒRƒA‚ÌŒ¸­
-            int currentEnemyScore = gameManeger.enemyScore;
-            gameManeger.enemyScore = skillManeger.DownScore(currentEnemyScore);
-            uiManeger.SetEnemyScoreText(gameManeger.enemyScore);
+            // 
+            enemyAIPlayer.score = skillManeger.DownScore(enemyAIPlayer.score);
+            uiManeger.SetEnemyScoreText(enemyAIPlayer.score);
 
         }
        
     }
 
     public void OnUpButtonInSkillPanel() {
-        int currentCardPoint = gameManeger.playerCardPoint;
+        int currentCardPoint = player.cardPoint;
         if( SkillCost.upSkillCost <= currentCardPoint) {
 
-            // ƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚ðÁ”ïB
+            // ï¿½Xï¿½Lï¿½ï¿½ï¿½|ï¿½Cï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
             currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
-            gameManeger.playerCardPoint = currentCardPoint;
-            uiManeger.SetPlayerCardPointText(gameManeger.playerCardPoint);
+            player.cardPoint = currentCardPoint;
+            uiManeger.SetPlayerCardPointText(player.cardPoint);
 
-            // “G‚ÌƒXƒRƒA‚Ìã¸
-            int currentEnemyScore = gameManeger.enemyScore;
-            gameManeger.enemyScore = skillManeger.UpScore(currentEnemyScore);
-            uiManeger.SetEnemyScoreText(gameManeger.enemyScore);
+            // ï¿½Gï¿½ÌƒXï¿½Rï¿½Aï¿½Ìã¸
+            enemyAIPlayer.score = skillManeger.UpScore(enemyAIPlayer.score);
+            uiManeger.SetEnemyScoreText(enemyAIPlayer.score);
            
           
             SkillPanel.SetActive(false);

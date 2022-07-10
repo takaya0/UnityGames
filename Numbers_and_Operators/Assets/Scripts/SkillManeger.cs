@@ -23,15 +23,15 @@ public class SkillManeger : MonoBehaviour{
     public void ExchangeEachNumbers() {
         //(gameManeger.enemyScore, gameManeger.) = (gameManeger.PlayerNumber.text, gameManeger.EnemyNumber.text);
     }
-    public void DrawCards(Transform operatorHandTransform,Transform numbersHandTransform) {
+    public void DrawCards(Transform operatorsHandTransform,Transform numbersHandTransform) {
 
-        int currentCardInHandNum = gameManeger.PlayerOperatorsHandTransform.GetComponentsInChildren<CardController>().Length;
+        int currentCardInHandNum = operatorsHandTransform.GetComponentsInChildren<CardController>().Length;
 
         if (currentCardInHandNum < Const.MAX_HAND_NUM) {
            
             string opetatorCardName = gameManeger.DrawCard(OperatorsCardList);
             string numberCardName = gameManeger.DrawCard(NumbersCardList);
-            gameManeger.AddCardToHand(operatorHandTransform, opetatorCardName);
+            gameManeger.AddCardToHand(operatorsHandTransform, opetatorCardName);
             gameManeger.AddCardToHand(numbersHandTransform, numberCardName);
 
         }
