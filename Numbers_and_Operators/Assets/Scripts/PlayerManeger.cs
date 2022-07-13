@@ -11,7 +11,7 @@ public class PlayerManeger : MonoBehaviour{
 
     public int cardPoint;
     public int score;
-    void Start(){
+    void Awake(){
         score = Const.INIT_SCORE;
         cardPoint = Const.INIT_CARD_POINT;
     }
