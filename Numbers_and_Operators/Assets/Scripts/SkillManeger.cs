@@ -20,8 +20,9 @@ public class SkillManeger : MonoBehaviour{
         return currentSkillPoint - skillCost;
     }
     
-    public void ExchangeEachNumbers() {
-        //(gameManeger.enemyScore, gameManeger.) = (gameManeger.PlayerNumber.text, gameManeger.EnemyNumber.text);
+    public void ExchangeEachScores(PlayerManeger player, RuleBasedAI enemyplayer) {
+        (player.score, enemyplayer.score) = (enemyplayer.score, player.score);
+    
     }
     public void DrawCards(Transform operatorsHandTransform,Transform numbersHandTransform) {
 
