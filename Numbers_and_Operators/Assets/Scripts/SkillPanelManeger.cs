@@ -26,7 +26,9 @@ public class SkillPanelManeger : MonoBehaviour
             player.cardPoint = currentCardPoint;
 
             uiManeger.SetPlayerCardPointText(currentCardPoint);
-            skillManeger.ExchangeEachNumbers();
+            skillManeger.ExchangeEachScores(player, enemyAIPlayer);
+            uiManeger.SetPlayerScoreText(player.score);
+            uiManeger.SetEnemyScoreText(enemyAIPlayer.score);
             SkillPanel.SetActive(false);
         }
        
@@ -50,7 +52,7 @@ public class SkillPanelManeger : MonoBehaviour
         int currentCardPoint = player.cardPoint;
         if(SkillCost.downSkillCost <= currentCardPoint) {
 
-            // �X�L���|�C���g������B
+            // 
             currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
             player.cardPoint = currentCardPoint;
             uiManeger.SetPlayerCardPointText(player.cardPoint);
@@ -67,12 +69,12 @@ public class SkillPanelManeger : MonoBehaviour
         int currentCardPoint = player.cardPoint;
         if( SkillCost.upSkillCost <= currentCardPoint) {
 
-            // �X�L���|�C���g������B
+            // 
             currentCardPoint = skillManeger.DecreaseCardPoint(currentCardPoint, SkillCost.drawSkillCost);
             player.cardPoint = currentCardPoint;
             uiManeger.SetPlayerCardPointText(player.cardPoint);
 
-            // �G�̃X�R�A�̏㏸
+            // 
             enemyAIPlayer.score = skillManeger.UpScore(enemyAIPlayer.score);
             uiManeger.SetEnemyScoreText(enemyAIPlayer.score);
            
