@@ -43,7 +43,7 @@ public class SkillPanelManeger : MonoBehaviour
 
             uiManeger.SetPlayerCardPointText(currentCardPoint);
 
-            skillManeger.DrawCards(player.operatorsHandTransform, player.numbersHandTransform);
+            skillManeger.DrawCards(player.operatorsHandTransform, player.numbersHandTransform, true);
             SkillPanel.SetActive(false);
         }
     }

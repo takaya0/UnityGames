@@ -24,7 +24,7 @@ public class SkillManeger : MonoBehaviour{
         (player.score, enemyplayer.score) = (enemyplayer.score, player.score);
     
     }
-    public void DrawCards(Transform operatorsHandTransform,Transform numbersHandTransform) {
+    public void DrawCards(Transform operatorsHandTransform,Transform numbersHandTransform, bool isPlayerCard) {
 
         int currentCardInHandNum = operatorsHandTransform.GetComponentsInChildren<CardController>().Length;
 
@@ -32,8 +32,8 @@ public class SkillManeger : MonoBehaviour{
            
             string opetatorCardName = gameManeger.DrawCard(OperatorsCardList);
             string numberCardName = gameManeger.DrawCard(NumbersCardList);
-            gameManeger.AddCardToHand(operatorsHandTransform, opetatorCardName);
-            gameManeger.AddCardToHand(numbersHandTransform, numberCardName);
+            gameManeger.AddCardToHand(operatorsHandTransform, opetatorCardName, isPlayerCard);
+            gameManeger.AddCardToHand(numbersHandTransform, numberCardName, isPlayerCard);
 
         }
     }

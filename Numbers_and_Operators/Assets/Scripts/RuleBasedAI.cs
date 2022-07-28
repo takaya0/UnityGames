@@ -40,11 +40,13 @@ public class RuleBasedAI : MonoBehaviour
         CardController numberCard = numbersCardList[Random.Range(0, numbersCardList.Length)];
 
         // �J�[�h��z�u����
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
         operatorCard.movement.SetCardTransform(gameManeger.EnemySelectedCardsTransform);
-        yield return new WaitForSeconds(1);
+        operatorCard.view.SetDisActiveMask();
+        yield return new WaitForSeconds(0.5f);
         numberCard.movement.SetCardTransform(gameManeger.EnemySelectedCardsTransform);
-        yield return new WaitForSeconds(1);
+        numberCard.view.SetDisActiveMask();
+        yield return new WaitForSeconds(0.7f);
 
         List<CardController> selectedCards = gameManeger.GetSelectedCards(gameManeger.EnemySelectedCardsTransform);
         score = gameManeger.CaluculateScore(score, selectedCards);

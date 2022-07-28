@@ -31,6 +31,8 @@ public class GameManeger : MonoBehaviour{
 
     // ターゲットの数字
     public int targetScore;
+
+ 
   
 
 
@@ -62,8 +64,8 @@ public class GameManeger : MonoBehaviour{
                 // カードを引く
                 string opetatorCardName = DrawCard(OperatorsCardList);
                 string numberCardName = DrawCard(NumbersCardList);
-                AddCardToHand(enemyAIPlayer.operatorsHandTransform, opetatorCardName);
-                AddCardToHand(enemyAIPlayer.numbersHandTransform, numberCardName);
+                AddCardToHand(enemyAIPlayer.operatorsHandTransform, opetatorCardName, false);
+                AddCardToHand(enemyAIPlayer.numbersHandTransform, numberCardName, false);
                 IsPlayerTurn = !IsPlayerTurn;
                 GameTurnFlow();
 
@@ -89,8 +91,8 @@ public class GameManeger : MonoBehaviour{
                     // カードを引く
                     string opetatorCardName = DrawCard(OperatorsCardList);
                     string numberCardName = DrawCard(NumbersCardList);
-                    AddCardToHand(player.operatorsHandTransform, opetatorCardName);
-                    AddCardToHand(player.numbersHandTransform, numberCardName);
+                    AddCardToHand(player.operatorsHandTransform, opetatorCardName, true);
+                    AddCardToHand(player.numbersHandTransform, numberCardName, true);
 
                     IsPlayerTurn = !IsPlayerTurn;
                     GameTurnFlow();
@@ -100,10 +102,16 @@ public class GameManeger : MonoBehaviour{
                     string kind = selectedCards[i].card.kind;
                     if (kind == "number") {
                         if (IsPlayerTurn) selectedCards[i].movement.SetCardTransform(player.numbersHandTransform);
-                        else selectedCards[i].movement.SetCardTransform(enemyAIPlayer.numbersHandTransform);
+                        else {
+                            selectedCards[i].movement.SetCardTransform(enemyAIPlayer.numbersHandTransform);
+                            selectedCards[i].view.SetDisActiveMask();
+                        } 
                     } else {
                         if (IsPlayerTurn) selectedCards[i].movement.SetCardTransform(player.operatorsHandTransform);
-                        else selectedCards[i].movement.SetCardTransform(enemyAIPlayer.operatorsHandTransform);
+                        else {
+                            selectedCards[i].movement.SetCardTransform(enemyAIPlayer.operatorsHandTransform);
+                            selectedCards[i].view.SetDisActiveMask();
+                        } 
                     }
                 }
             }
@@ -178,22 +186,22 @@ public class GameManeger : MonoBehaviour{
     private void AddInitCards(int NumbersCardNum, int OperatorsCardNum) {
         for(int i = 0; i < NumbersCardNum; i++) {
             string NumberCardName = DrawCard(NumbersCardList);
-            AddCardToHand(player.numbersHandTransform, NumberCardName);
+            AddCardToHand(player.numbersHandTransform, NumberCardName, true);
             NumberCardName = DrawCard(NumbersCardList);
-            AddCardToHand(enemyAIPlayer.numbersHandTransform ,NumberCardName);
+            AddCardToHand(enemyAIPlayer.numbersHandTransform ,NumberCardName, false);
         }
 
         for(int i = 0; i < OperatorsCardNum; i++) {
             string OpetatorCardName = DrawCard(OperatorsCardList);
-            AddCardToHand(player.operatorsHandTransform, OpetatorCardName);
+            AddCardToHand(player.operatorsHandTransform, OpetatorCardName, true);
             OpetatorCardName = DrawCard(OperatorsCardList);
-            AddCardToHand(enemyAIPlayer.operatorsHandTransform , OpetatorCardName);
+            AddCardToHand(enemyAIPlayer.operatorsHandTransform , OpetatorCardName, false);
         }
     }
   
-    public void AddCardToHand(Transform Hand, string cardName) {
+    public void AddCardToHand(Transform Hand, string cardName, bool isPlayerCard) {
         CardController card = Instantiate(CardPrefab, Hand, false);
-        card.Init(cardName);
+        card.Init(cardName, isPlayerCard);
     }
 
     public string DrawCard(List<string> CardList) {

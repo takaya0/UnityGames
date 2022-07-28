@@ -1,12 +1,12 @@
 {
   "name" : "SampleDeck",
-  "operators" : {
+  "operatorsDeck" : {
     "Plus" : 20,
     "Minus" : 20,
     "Products" : 20,
     "Quotients" : 20
   },
-  "numbers" : {
+  "numbersDeck" : {
     "1" : 10,
     "2" : 10,
     "3" : 10,
