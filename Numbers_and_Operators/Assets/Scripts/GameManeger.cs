@@ -13,8 +13,8 @@ public class GameManeger : MonoBehaviour{
     [SerializeField] GameObject ResultPanel;
     [SerializeField] TextMeshProUGUI ResultText;
 
-    [SerializeField] PlayerManeger player;
-    [SerializeField] RuleBasedAI enemyAIPlayer;
+    public PlayerManeger player;
+    public RuleBasedAI enemyAIPlayer;
     [SerializeField] UIManeger uiManeger;
 
 
@@ -24,17 +24,13 @@ public class GameManeger : MonoBehaviour{
     // 選んだカード
     public Transform EnemySelectedCardsTransform, PlayerSelectedCardsTransform;
 
-    List<string> OperatorsCardList = new List<string>(Const.OperatorsCardList);
-    List<string> NumbersCardList = new List<string>(Const.NumbersCardList);
+    readonly List<string> OperatorsCardList = new List<string>(Const.OperatorsCardList);
+    readonly List<string> NumbersCardList = new List<string>(Const.NumbersCardList);
    
     public bool IsPlayerTurn = true;
 
     // ターゲットの数字
     public int targetScore;
-
- 
-  
-
 
     void Start(){
         ResultPanel.SetActive(false);
@@ -58,8 +54,8 @@ public class GameManeger : MonoBehaviour{
             //EnemyTurn();
             StopAllCoroutines();
             StartCoroutine(enemyAIPlayer.EnemyActions());
-            
-            if (IsGameFinished(enemyAIPlayer.score)) ShowResultPanel();
+            //Debug.Log(enemyAIPlayer.score);
+            if (IsGameFinished(enemyAIPlayer.score)) ShowResultPanel(false);
             else {
                 // カードを引く
                 string opetatorCardName = DrawCard(OperatorsCardList);
@@ -68,7 +64,6 @@ public class GameManeger : MonoBehaviour{
                 AddCardToHand(enemyAIPlayer.numbersHandTransform, numberCardName, false);
                 IsPlayerTurn = !IsPlayerTurn;
                 GameTurnFlow();
-
             }
 
         }
@@ -86,7 +81,7 @@ public class GameManeger : MonoBehaviour{
                 foreach (CardController card in selectedCards) card.Vanish();
 
                 // ゲームが終了したら、結果パネルを出す
-                if (IsGameFinished(player.score)) ShowResultPanel();
+                if (IsGameFinished(player.score)) ShowResultPanel(IsPlayerTurn);
                 else {
                     // カードを引く
                     string opetatorCardName = DrawCard(OperatorsCardList);
@@ -99,7 +94,7 @@ public class GameManeger : MonoBehaviour{
                 }
             } else {
                 for (int i = 0; i < selectedCards.Count; i++) {
-                    string kind = selectedCards[i].card.kind;
+                    string kind = selectedCards[i].Card.kind;
                     if (kind == "number") {
                         if (IsPlayerTurn) selectedCards[i].movement.SetCardTransform(player.numbersHandTransform);
                         else {
@@ -124,7 +119,7 @@ public class GameManeger : MonoBehaviour{
         string formula = currentNumber;
 
         foreach(CardController card in selectedCards) {
-            string value = card.card.value;
+            string value = card.Card.value;
             formula += value;
         }
 
@@ -135,7 +130,6 @@ public class GameManeger : MonoBehaviour{
       
         // 式を作成
         string formula = GetFormulaFromSelectedCards(currentScore.ToString(), selectedCards);
-        Debug.Log(formula);
         // 文字数式を評価してscoreに格納
         ExpressionEvaluator.Evaluate(formula, out int score);
         // スコアが0以下なら1にする
@@ -164,7 +158,7 @@ public class GameManeger : MonoBehaviour{
    
         string[] rightCardOrder = { "operator", "number" };
         for(int i = 0; i < selectedCards.Count; i++) {
-            string kind = selectedCards[i].card.kind;
+            string kind = selectedCards[i].Card.kind;
             if(kind != rightCardOrder[i % 2]) return false;
         }
 
@@ -172,10 +166,10 @@ public class GameManeger : MonoBehaviour{
 
     }
 
-    private void ShowResultPanel() {
+    public void ShowResultPanel(bool isTurnPlayer)
+    {
         ResultPanel.SetActive(true);
-        if (IsPlayerTurn) ResultText.text = "Player WIN";
-        else ResultText.text = "Player LOSE";
+        ResultText.text = isTurnPlayer ? "Player WIN" : "Player LOSE";
     }
 
     public List<CardController> GetSelectedCards(Transform SelectedCardTransform) {
@@ -215,7 +209,7 @@ public class GameManeger : MonoBehaviour{
         return _targetScore;
     }
 
-    private bool IsGameFinished(int currentScore) {
+    public bool IsGameFinished(int currentScore) {
         return currentScore == targetScore;
 
     }
