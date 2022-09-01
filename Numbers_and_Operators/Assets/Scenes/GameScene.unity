@@ -1247,6 +1247,7 @@ MonoBehaviour:
   operatorsHandTransform: {fileID: 1187979845}
   numbersHandTransform: {fileID: 965757074}
   cardPoint: 0
+  score: 0
   uiManeger: {fileID: 83100778}
 --- !u!4 &392779574
 Transform:
@@ -1310,22 +1311,14 @@ MonoBehaviour:
   CardPrefab: {fileID: -5884803061201785173, guid: 51885248741fe5149a38c9af49246f43, type: 3}
   ResultPanel: {fileID: 327322332}
   ResultText: {fileID: 1938055795}
+  player: {fileID: 711323335}
   enemyAIPlayer: {fileID: 392779573}
   uiManeger: {fileID: 83100778}
   SkillPanel: {fileID: 507570933}
-  EnemyNumbersHandTransform: {fileID: 965757074}
-  EnemyOperatorsHandTransform: {fileID: 1187979845}
-  PlayerNumbersHandTransform: {fileID: 206140108}
-  PlayerOperatorsHandTransform: {fileID: 1773150717}
-  player: {fileID: 711323335}
   EnemySelectedCardsTransform: {fileID: 849262442}
   PlayerSelectedCardsTransform: {fileID: 1637433741}
-  enemyCardPoint: 1
-  playerCardPoint: 1
   IsPlayerTurn: 1
   targetScore: 0
-  playerScore: 1
-  enemyScore: 1
 --- !u!1 &507570933
 GameObject:
   m_ObjectHideFlags: 0
@@ -1808,6 +1801,7 @@ MonoBehaviour:
   operatorsHandTransform: {fileID: 1773150717}
   numbersHandTransform: {fileID: 206140108}
   cardPoint: 0
+  score: 0
 --- !u!4 &711323336
 Transform:
   m_ObjectHideFlags: 0
@@ -2288,10 +2282,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '6CP : Decrease enemy''s number  by 10~30'
+  m_text: "6CP :\u76F8\u624B\u306E\u6570\u5B57\u3092\u30E9\u30F3\u30C0\u30E0\u306B\u6E1B\u5C11\u3055\u305B\u308B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b4a8a4d7d854f844e9d42eaa8cfb501c, type: 2}
+  m_sharedMaterial: {fileID: 6476580394037889275, guid: b4a8a4d7d854f844e9d42eaa8cfb501c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3338,10 +3332,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '12CP : Exchange each number'
+  m_text: "12CP : \u304A\u4E92\u3044\u306E\u30B9\u30B3\u30A2\u3092\u4EA4\u63DB\u3059\u308B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b4a8a4d7d854f844e9d42eaa8cfb501c, type: 2}
+  m_sharedMaterial: {fileID: 6476580394037889275, guid: b4a8a4d7d854f844e9d42eaa8cfb501c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4127,10 +4121,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '4CP : Draw 2 cards (operator and number resp.)'
+  m_text: "4CP : \u6F14\u7B97\u30AB\u30FC\u30C9\u3068\u6570\u5B57\u30AB\u30FC\u30C9\u30921\u679A\u3065\u3064\u624B\u672D\u306B\u52A0\u3048\u308B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b4a8a4d7d854f844e9d42eaa8cfb501c, type: 2}
+  m_sharedMaterial: {fileID: 6476580394037889275, guid: b4a8a4d7d854f844e9d42eaa8cfb501c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4262,10 +4256,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '6CP : Increase enemy''s number  by 10~30'
+  m_text: "6CP :\u76F8\u624B\u306E\u6570\u5B57\u3092\u30E9\u30F3\u30C0\u30E0\u306B\u5897\u52A0\u3055\u305B\u308B"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: b4a8a4d7d854f844e9d42eaa8cfb501c, type: 2}
+  m_sharedMaterial: {fileID: 6476580394037889275, guid: b4a8a4d7d854f844e9d42eaa8cfb501c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
